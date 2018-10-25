@@ -23,7 +23,7 @@ $ pip install -r requirements.txt
 
 Run the script. Use the `python` command if your default Python version is 3.x
 ```
-$ python3 rrt.py
+$ python3 main.py
 ```
 
 #### Methods
