@@ -4,8 +4,8 @@ import matplotlib.patches as patches
 import utils
 import random
 
-class RRT():
-    def __init__(self, start, goal, num_attempts, distance, obstacles, max_x, max_y, ax, bias_every=5):
+class UnidirectionalRRT():
+    def __init__(self, start, goal, num_attempts, distance, obstacles, max_x, max_y, ax):
         self.start = start
         self.goal = goal
         self.num_attempts = num_attempts
@@ -15,7 +15,7 @@ class RRT():
         self.max_x = max_x
         self.max_y = max_y
         self.ax = ax
-        self.bias_every = bias_every
+        self.bias_every = int(self.num_attempts*.05) # 5% bias towards the goal
 
     def build_rrt(self):
         for i in range(self.num_attempts):
@@ -43,9 +43,21 @@ class RRT():
         self.adj_matrix[q_new].append(q_near)
         return q_new
 
-    def draw_graph(self):
+    def display_rrt(self):
         self.draw_nodes()
         self.draw_edges()
+
+        shortest_path = utils.dijkstra(self.adj_matrix, self.start, self.goal)
+        self.draw_shortest_path(shortest_path)
+        plt.show()
+
+    def draw_shortest_path(self, edges):
+        if len(edges) < 2:
+            return
+        prev = edges[0]
+        for curr in edges[1:]:
+            self.draw_line(prev, curr, color='yellow')
+            prev = curr
 
     def draw_nodes(self):
         for node in self.adj_matrix:

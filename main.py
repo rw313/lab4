@@ -98,8 +98,7 @@ if __name__ == "__main__":
     shapes = build_shapes(args.obstacle_path)
 
     print("Initializing RRT")
-    rrt = rrt.RRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax)
+    rrt = rrt.UnidirectionalRRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax)
     print("Building tree")
     rrt.build_rrt()
-    rrt.draw_graph()
-    plt.show()
+    rrt.display_rrt()

@@ -31,3 +31,31 @@ def get_nearest_point(curr_point, other_points):
             min_distance = distance
             nearest_point = other_point
     return nearest_point
+
+def dijkstra(graph, start, end):
+	dp = {start: (0, None)}
+	curr = start
+	seen = set()
+
+	while curr != end:
+		seen.add(curr)
+		neighbors = graph[curr]
+
+		for neighbor in neighbors:
+			dist_to_neighbor = get_distance(curr, neighbor) + dp[curr][0]
+			if neighbor not in dp or dp[neighbor][0] > dist_to_neighbor:
+				dp[neighbor] = (dist_to_neighbor, curr)
+		curr = None
+		min_dist = float('inf')
+		for node in dp:
+			if node not in seen and dp[node][0] < min_dist:
+				min_dist = dp[node][0]
+				curr = node
+		if not curr:
+			raise Exception("Can't find path")
+
+	path = []
+	while curr:
+		path.append(curr)
+		curr = dp[curr][1]
+	return path[::-1]
