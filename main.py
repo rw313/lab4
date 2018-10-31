@@ -9,7 +9,7 @@ from matplotlib.path import Path
 import matplotlib.patches as patches
 import numpy as np
 import random, math
-import rrt.py
+import rrt
 
 def build_obstacle_course(obstacle_path, ax):
     vertices = list()
@@ -83,12 +83,12 @@ if __name__ == "__main__":
     parser.add_argument('distance',
                         help="Distance to grow tree branches",
                         nargs='?',
-                        default=5,
+                        default=10,
                         type=int)
     parser.add_argument('attempts',
                         help="Number of attempts to expand the tree",
                         nargs='?',
-                        default=3,
+                        default=500,
                         type=int)
     args = parser.parse_args()
 
@@ -96,5 +96,10 @@ if __name__ == "__main__":
     path = build_obstacle_course(args.obstacle_path, ax)
     start, goal = add_start_and_goal(args.start_goal_path, ax)
     shapes = build_shapes(args.obstacle_path)
-    rrt = RRT(start, goal, args.attempts, args.distancce, shapes)
-    # plt.show()
+
+    print("Initializing RRT")
+    rrt = rrt.RRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax)
+    print("Building tree")
+    rrt.build_rrt()
+    rrt.draw_graph()
+    plt.show()

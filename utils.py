@@ -7,6 +7,17 @@ def get_distance(point1, point2):
 
     return math.sqrt((y2-y1)**2 + (x2-x1)**2)
 
+
+def get_point_on_line(start, end, distance):
+    magnitude = get_distance(start, end)
+    if magnitude == 0:
+        return start
+
+    start_x, start_y = start
+    end_x, end_y = end
+    unit_vector = ((end_x-start_x)/magnitude, (end_y-start_y)/magnitude)
+    return start_x + unit_vector[0]*distance, start_y + unit_vector[1]*distance
+
 def get_nearest_point(curr_point, other_points):
     if not other_points:
         return curr_point

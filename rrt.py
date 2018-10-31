@@ -1,23 +1,70 @@
+import matplotlib.pyplot as plt
+import matplotlib.patches as patches
+
 import utils
+import random
 
 class RRT():
-    def __init__(self, start, goal, num_attempts, distance, obstacles):
+    def __init__(self, start, goal, num_attempts, distance, obstacles, max_x, max_y, ax, bias_every=5):
         self.start = start
         self.goal = goal
         self.num_attempts = num_attempts
         self.distance = distance
         self.obstacles = obstacles
         self.adj_matrix = {start: []}
+        self.max_x = max_x
+        self.max_y = max_y
+        self.ax = ax
+        self.bias_every = bias_every
 
-    def build_rrt(self, root=self.start):
-        for _ in range(self.num_attempts):
-            rand_point = self._get_rand_config(root)
-            self.extend_rrt(self, rand_point)
+    def build_rrt(self):
+        for i in range(self.num_attempts):
+            # bias towards goal every self.bias_every iterations
+            rand_point = self._get_rand_config() if i%self.bias_every != 0 else self.goal
+            q_new = self.extend_rrt(rand_point)
+            if q_new and utils.get_distance(self.goal, q_new) < self.distance:
+                self.adj_matrix[self.goal] = [q_new]
+                self.adj_matrix[q_new].append(self.goal)
+                return
 
         return True
 
-    def extend_rrt(self, new_point):
-        nearest_point = utils.get_nearest_point(new_point, self.adj_matrix.keys())
+    def extend_rrt(self, rand_point):
+        q_near = utils.get_nearest_point(rand_point, self.adj_matrix.keys())
+        q_new = utils.get_point_on_line(q_near, rand_point, self.distance)
 
-    def _get_rand_config(self, root):
-        pass
+
+        if q_near not in self.adj_matrix:
+            self.adj_matrix[q_near] = []
+        if q_new not in self.adj_matrix:
+            self.adj_matrix[q_new] = []
+
+        self.adj_matrix[q_near].append(q_new)
+        self.adj_matrix[q_new].append(q_near)
+        return q_new
+
+    def draw_graph(self):
+        self.draw_nodes()
+        self.draw_edges()
+
+    def draw_nodes(self):
+        for node in self.adj_matrix:
+            self.draw_point(node)
+
+    def draw_edges(self):
+        drawable_edges = set()
+        for node, edges in self.adj_matrix.items():
+            for edge in edges:
+                if (node, edge) not in drawable_edges and (edge, node) not in drawable_edges:
+                    drawable_edges.add((node, edge))
+        for edge in drawable_edges:
+            self.draw_line(*edge)
+
+    def draw_point(self, point, color='blue'):
+        self.ax.plot(point[0], point[1], marker='o', color=color, markersize=2)
+
+    def draw_line(self, start, end, color='green'):
+        self.ax.plot([start[0], end[0]], [start[1], end[1]], color=color, linewidth=1)
+
+    def _get_rand_config(self):
+        return random.uniform(0, self.max_x), random.uniform(0, self.max_y)
