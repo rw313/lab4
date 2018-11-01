@@ -70,6 +70,11 @@ def build_shapes(obstacle_path):
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()
+    parser.add_argument('distance',
+                        help="Distance to grow tree branches",
+                        nargs='?',
+                        default=15,
+                        type=int)
     parser.add_argument('obstacle_path',
                         help="File path for obstacle set",
                         nargs='?',
@@ -80,15 +85,10 @@ if __name__ == "__main__":
                         nargs='?',
                         default='./start_goal.txt',
                         type=str)
-    parser.add_argument('distance',
-                        help="Distance to grow tree branches",
-                        nargs='?',
-                        default=10,
-                        type=int)
     parser.add_argument('attempts',
                         help="Number of attempts to expand the tree",
                         nargs='?',
-                        default=500,
+                        default=50000,
                         type=int)
     args = parser.parse_args()
 
@@ -100,5 +100,4 @@ if __name__ == "__main__":
     print("Initializing RRT")
     rrt = rrt.UnidirectionalRRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax)
     print("Building tree")
-    rrt.build_rrt()
-    rrt.display_rrt()
+    rrt.find_and_draw_path()

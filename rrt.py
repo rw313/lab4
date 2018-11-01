@@ -15,16 +15,32 @@ class UnidirectionalRRT():
         self.max_x = max_x
         self.max_y = max_y
         self.ax = ax
-        self.bias_every = int(self.num_attempts*.05) # 5% bias towards the goal
+        self.bias_every = int(self.num_attempts*.1) # 10% bias towards the goal
+
+    def find_and_draw_path(self):
+        self.build_rrt()
+        shortest_path = utils.dijkstra(self.adj_matrix, self.start, self.goal)
+        if shortest_path is None:
+            print("Path not found")
+            return
+
+        self.draw_nodes()
+        self.draw_edges()
+
+        self.draw_shortest_path(shortest_path)
+        plt.show()
+        return
 
     def build_rrt(self):
         for i in range(self.num_attempts):
             # bias towards goal every self.bias_every iterations
             rand_point = self._get_rand_config() if i%self.bias_every != 0 else self.goal
             q_new = self.extend_rrt(rand_point)
-            if q_new and utils.get_distance(self.goal, q_new) < self.distance:
+
+            if q_new and utils.get_distance(self.goal, q_new) < self.distance and not utils.line_collides(q_new, self.goal, self.obstacles, self.distance):
                 self.adj_matrix[self.goal] = [q_new]
                 self.adj_matrix[q_new].append(self.goal)
+                print("Found path after generating {} random configs".format(i))
                 return
 
         return True
@@ -33,6 +49,8 @@ class UnidirectionalRRT():
         q_near = utils.get_nearest_point(rand_point, self.adj_matrix.keys())
         q_new = utils.get_point_on_line(q_near, rand_point, self.distance)
 
+        if utils.point_collides(q_new, self.obstacles) or utils.line_collides(q_near, q_new, self.obstacles, self.distance):
+            return None
 
         if q_near not in self.adj_matrix:
             self.adj_matrix[q_near] = []
@@ -43,13 +61,6 @@ class UnidirectionalRRT():
         self.adj_matrix[q_new].append(q_near)
         return q_new
 
-    def display_rrt(self):
-        self.draw_nodes()
-        self.draw_edges()
-
-        shortest_path = utils.dijkstra(self.adj_matrix, self.start, self.goal)
-        self.draw_shortest_path(shortest_path)
-        plt.show()
 
     def draw_shortest_path(self, edges):
         if len(edges) < 2:
