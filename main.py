@@ -30,7 +30,7 @@ def build_obstacle_course(obstacle_path, ax):
     pathpatch = patches.PathPatch(path, facecolor='None', edgecolor='xkcd:violet')
 
     ax.add_patch(pathpatch)
-    ax.set_title('Rapidly-exploring Random Tree')
+    ax.set_title('Rapidly-exploring Random Tree (jl4397 and rww2115)')
 
     ax.dataLim.update_from_data_xy(vertices)
     ax.autoscale_view()

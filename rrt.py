@@ -16,6 +16,7 @@ class UnidirectionalRRT():
         self.max_y = max_y
         self.ax = ax
         self.bias_every = int(self.num_attempts*.1) # 10% bias towards the goal
+        self.sleep = 0.00001
 
     def find_and_draw_path(self):
         self.build_rrt()
@@ -23,9 +24,6 @@ class UnidirectionalRRT():
         if shortest_path is None:
             print("Path not found")
             return
-
-        self.draw_nodes()
-        self.draw_edges()
 
         self.draw_shortest_path(shortest_path)
         plt.show()
@@ -59,6 +57,9 @@ class UnidirectionalRRT():
 
         self.adj_matrix[q_near].append(q_new)
         self.adj_matrix[q_new].append(q_near)
+
+        self.draw_point(q_new)
+        self.draw_line(q_near, q_new)
         return q_new
 
 
@@ -70,24 +71,13 @@ class UnidirectionalRRT():
             self.draw_line(prev, curr, color='yellow')
             prev = curr
 
-    def draw_nodes(self):
-        for node in self.adj_matrix:
-            self.draw_point(node)
-
-    def draw_edges(self):
-        drawable_edges = set()
-        for node, edges in self.adj_matrix.items():
-            for edge in edges:
-                if (node, edge) not in drawable_edges and (edge, node) not in drawable_edges:
-                    drawable_edges.add((node, edge))
-        for edge in drawable_edges:
-            self.draw_line(*edge)
-
     def draw_point(self, point, color='blue'):
         self.ax.plot(point[0], point[1], marker='o', color=color, markersize=2)
+        plt.pause(self.sleep)
 
     def draw_line(self, start, end, color='green'):
         self.ax.plot([start[0], end[0]], [start[1], end[1]], color=color, linewidth=1)
+        plt.pause(self.sleep)
 
     def _get_rand_config(self):
         return random.uniform(0, self.max_x), random.uniform(0, self.max_y)
