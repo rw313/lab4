@@ -62,3 +62,4 @@ The default values for the command line arguments are:
 
 
 #### Video
+Part A: https://youtu.be/OH3phGFhagQ
