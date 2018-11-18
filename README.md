@@ -42,11 +42,12 @@ The default values for the command line arguments are:
   - `add_start_and_goal()`: Draws the start and end points
   - `build_shapes()`: Builds a representation of obstacles as a list of list of points corresponding to the vertices of the obstacles
 2. `rrt.py`: Defines the `UnidirectionalRRT` class and its methods  
-  - `UnidirectionalRRT`: A class that builds and draws the RRT. Has the following attributes:
-    - Finds
-  - `find_and_draw_path()`: Builds and draws the RRT. Main function.
+  - `UnidirectionalRRT`: A class that builds and draws the RRT. The unidirectionalRRT can be turned into a bidirectional RRT by using a parameter, is_bi_dir. 
+  - `find_and_draw_path()`: Builds and draws the RRT. Main function that controls drawing the path as well.
   - `build_rrt()`: Builds the RRT by sampling points for a max of `self.attempts` times
+  -  build_bi_rrt(): Build the bidirectional RRT by sampling points for a max of self.attempts times and builds 2 trees separately from the goal and start. Merges the trees once a point on either tree is close enough to the other tree.
   - `extend_rrt()`: Called by `build_rrt()` to try and extend the tree
+  -  extend_rrt_bi() : Called by build_bi_rrt() to try and extend both trees at the same time 
   - `draw_shortest_path()`: Draws the shortest path
   - `draw_point()`: Draws a point
   - `draw_line()`: Draws a line between two points
@@ -62,4 +63,5 @@ The default values for the command line arguments are:
 
 
 #### Video
-Part A: https://youtu.be/OH3phGFhagQ
+Part 1: https://youtu.be/OH3phGFhagQ
+Part 2: https://youtu.be/aydU0UVlmEo

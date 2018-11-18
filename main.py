@@ -27,7 +27,7 @@ def build_obstacle_course(obstacle_path, ax):
     vertices.append((0,0))
     vertices = np.array(vertices, float)
     path = Path(vertices, codes)
-    pathpatch = patches.PathPatch(path, facecolor='None', edgecolor='xkcd:violet')
+    pathpatch = patches.PathPatch(path, facecolor='None', edgecolor='#EE82EE')
 
     ax.add_patch(pathpatch)
     ax.set_title('Rapidly-exploring Random Tree (jl4397 and rww2115)')
@@ -45,8 +45,8 @@ def add_start_and_goal(start_goal_path, ax):
         start = tuple(map(int, f.readline().strip().split(' ')))
         goal  = tuple(map(int, f.readline().strip().split(' ')))
 
-    ax.add_patch(patches.Circle(start, facecolor='xkcd:bright green'))
-    ax.add_patch(patches.Circle(goal, facecolor='xkcd:fuchsia'))
+    ax.add_patch(patches.Circle(start, facecolor='#66B266'))
+    ax.add_patch(patches.Circle(goal, facecolor='#ff00FF'))
 
     return start, goal
 
@@ -98,6 +98,8 @@ if __name__ == "__main__":
     shapes = build_shapes(args.obstacle_path)
 
     print("Initializing RRT")
-    rrt = rrt.UnidirectionalRRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax)
+    rrt = rrt.UnidirectionalRRT(start, goal, args.attempts, args.distance, shapes, 600, 600, ax, True)
     print("Building tree")
     rrt.find_and_draw_path()
+
+    #rrt.find_and_draw_path(bidirection=true)
